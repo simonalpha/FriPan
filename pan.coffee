@@ -28,6 +28,7 @@ class Pan
 
         comp = MDS.pca(@matrix, range)
         @scatter2.draw(numeric.transpose(comp), @matrix.strains(), [0,1])
+        @tree.draw(@matrix, range)
 
         # Callback to reorder rows
         window.clearTimeout(@background_runner)
@@ -264,6 +265,9 @@ class Pan
                      mouseout: (s) -> d3.selectAll(".strain-#{s.id}").classed({'highlight':false})
                     )
 
+        @tree = new Tree(
+                 elem: '#tree'
+                )
         @redraw_mds(null)
 
         $('#vscale input').on('keyup', (e) =>
