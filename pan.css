@@ -81,7 +81,7 @@ path {
 
 #vscale { float: right; }
 
-#mds, #mds2 { display: inline-block; }
+#mds, #mds2, #dist-table { display: inline-block; }
 #mds-thinking { display: none; position: absolute; font-size: 50px; top: 200px; left: 600px; }
 
 .mds-scatter svg { position: absolute; }
@@ -95,3 +95,7 @@ path {
   fill-opacity: .2;
   stroke: #fff;
 }
+
+#dist-table thead { display: none; }
+#dist-table { font-size: 10px; text-align: right; }
+

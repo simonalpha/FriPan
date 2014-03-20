@@ -64,6 +64,39 @@ class MDS
         {xs: dim(0), ys: dim(1) }
 
 
+class DistanceTable
+    constructor: (@opts) ->
+        @tab = d3.select(@opts.elem)
+                 .append("table")
+                 .attr("class", "dist-table")
+
+    draw: (dist, strains) ->
+        @tab.html('')
+
+        thead = @tab.append("thead")
+        tbody = @tab.append("tbody")
+
+        # append the header row
+        thead.append("tr")
+            .selectAll("th")
+            .data(strains)
+            .enter()
+            .append("th")
+                .text((s) -> s.name)
+
+        # create a row for each object in the data
+        rows = tbody.selectAll("tr")
+            .data(dist)
+            .enter()
+            .append("tr")
+
+        # create a cell in each row for each column
+        cells = rows.selectAll("td")
+                   .data((row,j) -> [{value: strains[j].name}].concat strains.map((s,i) -> {column: s, value: row[i]}))
+                .enter()
+                .append("td")
+                .text((d) -> d.value)
+
 # Very simple scatter plot
 class ScatterPlot
     width = 300
@@ -228,3 +261,4 @@ class ScatterPlot
 
 window.MDS = MDS
 window.ScatterPlot = ScatterPlot
+window.DistanceTable = DistanceTable

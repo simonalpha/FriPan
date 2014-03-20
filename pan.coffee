@@ -28,6 +28,7 @@ class Pan
 
         comp = MDS.pca(@matrix, range)
         @scatter2.draw(numeric.transpose(comp), @matrix.strains(), [0,1])
+        @dist_table.draw(MDS.distance(@matrix, range), @matrix.strains())
 
         # Callback to reorder rows
         window.clearTimeout(@background_runner)
@@ -288,6 +289,10 @@ class Pan
                      mouseout: (s) => @unhighlight()
                      brush: (s) => @mds_brushed(s)
                     )
+
+        @dist_table = new DistanceTable(
+                        elem: '#dist-table'
+                          )
 
         @redraw_mds(null)
 
