@@ -405,6 +405,7 @@ class Pan
                 @vscale = val
                 @set_scale()
         )
+        $( window ).resize(=> @resize())
 
 
     # Resize.  Just redraw everything!
@@ -474,25 +475,59 @@ load_desc = (matrix) ->
         )
     )
 
-init = () ->
-
-    $('.by').mouseover(() -> $('.gravatar').show())
-    $('.by').mouseout(() -> $('.gravatar').hide())
-
-    d3.tsv("pan.proteinortho", (data) ->
-        matrix = parse_proteinortho(data)
-
-        console.log "Features : ",matrix.genes()
-        console.log "Strains : ",matrix.strains()
-        load_desc(matrix)
-
-        d3.select("#topinfo")
-            .html("Loaded #{matrix.strains().length} strains and #{matrix.genes().length} ortholog clusters")
-
-
-        pan = new Pan('#chart', matrix)
-
-        $( window ).resize(() -> pan.resize())
+process_desc = (matrix, data) ->
+    data.forEach( (row) ->
+        matrix.set_desc(row[0], row[1])
     )
 
-$(document).ready(() -> init() )
+handle_input = ->
+    if document.getElementById('input-demo').checked
+        build_viz(get('pan.proteinortho.example'),
+                  get('pan.descriptions.example'))
+    else
+        build_viz(upload($('#clust-file')[0].files[0]),
+                  upload($('#desc-file')[0].files[0]))
+
+data_selector_init = ->
+    $('#load-dialog').dialog({
+        height: 300,
+        width: 400,
+        modal: true,
+        buttons: {
+        "Load": ->
+            $(this).dialog('close')
+            handle_input()
+        }
+    })
+
+    $('input[type=radio][name=input-type]').change ->
+        if @.value == "local"
+            $('.local > input').prop('disabled', false)
+        else
+            $('.local > input').prop('disabled', true).prop('value', "")
+
+build_matrix = (cluster, desc) ->
+    matrix = parse_proteinortho(cluster)
+    process_desc(matrix, desc)
+
+    console.log "Features : ",matrix.genes()
+    console.log "Strains : ",matrix.strains()
+    d3.select("#topinfo")
+        .html("Loaded #{matrix.strains().length} strains and #{matrix.genes().length} ortholog clusters")
+    return matrix
+
+build_viz = (clust, desc) ->
+    Promise.all([clust.then(d3.tsv.parse),
+                 desc.then(d3.tsv.parseRows)])
+    .then((results) ->
+        build_matrix(results[0], results[1]))
+    .then((matrix) -> new Pan('#chart', matrix))
+
+
+init = ->
+    data_selector_init()
+
+    $('.by').mouseover -> $('.gravatar').show()
+    $('.by').mouseout -> $('.gravatar').hide()
+
+$(document).ready -> init()

@@ -5,3 +5,4 @@ mds-plot.js
 mds-worker.js
 gene-matrix.js
 util.js
+data.js

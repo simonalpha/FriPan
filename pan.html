@@ -17,14 +17,35 @@
   <!-- numeric js -->
   <script type="text/javascript" src="lib/numeric-1.2.6.js"></script>
 
+  <!-- JS Promises polyfill -->
+  <script type="text/javascript" src="lib/promise-1.0.0.min.js"></script>
+
   <script type="text/javascript" src="util.js"></script>
   <script type="text/javascript" src="pan.js"></script>
   <script type="text/javascript" src="mds-plot.js"></script>
   <script type="text/javascript" src="gene-matrix.js"></script>
+  <script type="text/javascript" src="data.js"></script>
 
 </head>
 
 <body>
+
+  <div id='load-dialog' title='Load files'>
+    <form id='load-select'>
+      <div>
+        <label><input type='radio' name='input-type' id='input-demo' value='demo' checked>Demo</label>
+        <br>
+        <label><input type='radio' name='input-type' id='input-local' value='local'>Local files</label>
+      </div>
+      <div class='local'>
+        <label for='clust-file'>Cluster file</label>
+        <input type='file' name='clust-file' id='clust-file' disabled>
+        <br>
+        <label for='desc-file'>Description file</label>
+        <input type='file' name='desc-file' id='desc-file' disabled>
+      </div>
+    </form>
+  </div>
 
   <div>
     <span class='hdr'>FriPan</span>
