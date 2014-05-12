@@ -481,7 +481,7 @@ process_desc = (matrix, data) ->
     )
 
 handle_input = ->
-    if document.getElementById('input-demo').checked
+    if $('#input-demo').prop('checked')
         build_viz(get('pan.proteinortho.example'),
                   get('pan.descriptions.example'))
     else
