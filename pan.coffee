@@ -116,7 +116,7 @@ class Pan
         @set_scale(0,@width/(@bw*@matrix.genes().length))
 
     detail_off: () ->
-        @tooltip.style("display", "none")
+        @tooltip.css("display", "none")
         @unhighlight()
 
     detail: () ->
@@ -136,11 +136,20 @@ class Pan
         gene_name_strain = @matrix.strain_gene_name(strain_id,col)
         desc_pri = @matrix.get_desc_non_hypot(col)
         desc = @matrix.get_desc(gene_name_strain)
-        @tooltip.style("display", "block") # un-hide it (display: none <=> block)
-               .style("left", (d3.event.pageX) + "px")
-               .style("top", (d3.event.pageY) + "px")
-               .select("#tooltip-text")
+        d3.select("#tooltip-text")
                    .html("<b>Strain:</b> #{strain.name}<br/><b>Gene:</b> #{gene_name_pri}</br><b>Gene from strain:</b> #{gene_name_strain}<br/><b>Present:</b> #{p}<br/><b>Desc (pri):</b> #{desc_pri}<br/><b>Desc:</b> #{desc}")
+
+        w = $(window)
+        screenEndX = w.scrollLeft() + w.width()
+        screenEndY = w.scrollTop() + w.height()
+        if d3.event.pageX + @tooltip.width() >= screenEndX
+            left = screenEndX - @tooltip.width()
+        if d3.event.pageY + @tooltip.height() >= screenEndY
+            top = screenEndY - @tooltip.height()
+
+        @tooltip.css("display", "block") # un-hide it (display: none <=> block)
+               .css("left", (left || d3.event.pageX) + "px")
+               .css("top", (top || d3.event.pageY) + "px")
 
     create_elems: () ->
         tot_width = $(@elem).width()
@@ -233,7 +242,7 @@ class Pan
                        .attr("transform", "scale(1,#{@vscale})")
 
         # set tooltip object
-        @tooltip = d3.select("#tooltip")
+        @tooltip = $("#tooltip")
 
     # Collapse the 'off' regions in a set of boxes with x and len
     collapse_off: (strain_id) ->
